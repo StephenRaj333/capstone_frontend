@@ -1,0 +1,88 @@
+
+
+/* login  */
+
+*{
+	padding: 0;
+	font-family: 'Open Sans', sans-serif;
+}
+
+
+.login-container {	
+	background: url(https://res.cloudinary.com/dejzo3x6l/image/upload/v1462601848/login%20page%20design/material-design-1080p-wallpaper_1.jpg) no-repeat center;
+	background-attachment: fixed;
+	background-size: cover;	
+	width: 100vw;
+	height: 100vh;	
+}	
+
+.login-container h5 {
+	color: rgb(56, 19, 19);
+}	
+
+.container{
+	width: 500px;
+	height: 400px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);		
+	text-align: center;
+	background-color: rgba(95, 158, 160, 0.43);
+	border-radius: 8px;		
+}
+
+.container img{
+	width: 120px;
+	height: 120px;
+	margin-top:-50px;
+	margin-bottom: 50px;
+}
+
+input[type="text"],input[type="email"],input[type="password"]{
+	width: 250px;
+	height: 40px;
+	margin-bottom: 30px;
+	padding-left: 40px;
+	font-size: 17px;
+	outline: none;
+	border: none;	
+	border-radius: 5px;
+}
+
+
+.input_box::before{
+	content:url(https://res.cloudinary.com/dejzo3x6l/image/upload/v1462601843/login%20page%20design/user.png);
+	position: absolute;
+	padding: 4.2px;	
+	background-color: rgba(219, 116, 40, 0.33);
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;	
+}
+
+.input_box:nth-child(3)::before{
+	content:url(https://res.cloudinary.com/dejzo3x6l/image/upload/v1462601842/login%20page%20design/lock.png);
+}
+.submit_btn{
+	background-color:rgb(214, 119, 49);
+	font-size: 20px;
+	padding:10px 30px;
+	border: none;
+	letter-spacing: 2px;
+	transition: background-color .2s;
+	margin-bottom: 10px;
+	border-radius: 5px;	
+}
+.submit_btn:hover{
+	background-color:rgb(247, 136, 55);
+	cursor: pointer;
+}
+
+a.for_pass{
+	color: #d1cfcf;
+}
+a.for_pass:hover{
+	color:white;
+}
+
+
