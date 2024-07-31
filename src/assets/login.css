@@ -9,7 +9,8 @@
 
 
 .login-container {	
-	background: url(https://res.cloudinary.com/dejzo3x6l/image/upload/v1462601848/login%20page%20design/material-design-1080p-wallpaper_1.jpg) no-repeat center;
+	background: linear-gradient(to bottom, #00c6ff, #0072ff);
+	/* background: url(https://res.cloudinary.com/dejzo3x6l/image/upload/v1462601848/login%20page%20design/material-design-1080p-wallpaper_1.jpg) no-repeat center; */
 	background-attachment: fixed;
 	background-size: cover;	
 	width: 100vw;
@@ -17,8 +18,9 @@
 }	
 
 .login-container h5 {
-	color: rgb(56, 19, 19);
-}	
+	color: rgb(56, 19, 19);  
+	font-size: 18px;
+}		
 
 .container{
 	width: 500px;
@@ -28,8 +30,8 @@
 	left: 50%;
 	transform: translate(-50%, -50%);		
 	text-align: center;
-	background-color: rgba(95, 158, 160, 0.43);
-	border-radius: 8px;		
+	background: rgba(35, 50, 83, 0.50);
+	border-radius: 40px;	
 }
 
 .container img{
@@ -50,14 +52,18 @@ input[type="text"],input[type="email"],input[type="password"]{
 	border-radius: 5px;
 }
 
+.input_box{
+	position: relative;
+}
 
 .input_box::before{
-	content:url(https://res.cloudinary.com/dejzo3x6l/image/upload/v1462601843/login%20page%20design/user.png);
-	position: absolute;
-	padding: 4.2px;	
-	background-color: rgba(219, 116, 40, 0.33);
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;	
+    content: url(https://res.cloudinary.com/dejzo3x6l/image/upload/v1462601843/login%20page%20design/user.png);
+    position: absolute;
+    padding: 5.2px;
+    background-color: rgb(214, 119, 49);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    top: 0;	
 }
 
 .input_box:nth-child(3)::before{
@@ -78,11 +84,17 @@ input[type="text"],input[type="email"],input[type="password"]{
 	cursor: pointer;
 }
 
-a.for_pass{
-	color: #d1cfcf;
-}
-a.for_pass:hover{
-	color:white;
+.for_pass {
+	color: #FFF;
 }
 
+.for_pass a {
+	color: #000;
+	text-decoration: underline;
+}	
+
+.for_pass a:hover {
+	color: #FFF;
+	text-decoration: underline;
+}
 
