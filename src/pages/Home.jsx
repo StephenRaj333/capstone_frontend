@@ -3,6 +3,9 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Axios from 'axios';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+
 
 const Home = () => {
     const [tableData, setTableData] = useState([]);
@@ -25,12 +28,12 @@ const Home = () => {
     const handleClose = () => setShow(false);
 
     useEffect(() => {
-        Axios.get("http://localhost:3000/get")      
-            .then((res) => {    
-                setTableData(res.data);  
+        Axios.get("http://localhost:3000/get")
+            .then((res) => {
+                setTableData(res.data);
             })
             .catch((err) => console.log("Error", err));
-    }, []);
+    }, [tableData]);
 
     const handleEdit = (idx) => {
         setEditIdx(idx);
@@ -43,7 +46,7 @@ const Home = () => {
     };
 
     const handleSave = () => {
-        Axios.put(`https://capstone-backend-psi-seven.vercel.app/update/${editedRow.id}`, editedRow)    
+        Axios.put(`https://capstone-backend-psi-seven.vercel.app/update/${editedRow.id}`, editedRow)
             .then((res) => {
                 console.log(res.data);
                 let updatedData = [...tableData];
@@ -55,7 +58,7 @@ const Home = () => {
     };
 
     const handleDelete = (id) => {
-        Axios.delete(`https://capstone-backend-psi-seven.vercel.app/delete/${id}`)      
+        Axios.delete(`https://capstone-backend-psi-seven.vercel.app/delete/${id}`)
             .then((res) => {
                 console.log(res.data);
                 setTableData(tableData.filter(item => item.id !== id));
@@ -99,27 +102,74 @@ const Home = () => {
     );
 
     const handleShow = (idx) => {
-        setShow(true); 
-        setView(idx); 
+        setShow(true);
+        setView(idx);
         console.log(idx);
     }
 
+    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    
+    const handleDownloadReport = () => {
+      const docDefinition = {
+        content: [
+          { text: 'User Detail', style: 'header', margin: [0, 0, 0, 10] },
+          {
+            table: {
+              headerRows: 1,
+              widths: ['*', '*'],
+              body: [
+                [{ text: 'Field', style: 'tableHeader' }, { text: 'Value', style: 'tableHeader' }],
+                ['Project Name', view.projectname || ''],
+                ['Description', view.description || ''],
+                ['Technologies', view.technologies || ''],
+                ['Deadlines', view.deadlines || ''],
+                ['Project Members', view.projectMembers || ''],
+                ['Status', view.status || ''],
+                ['Client', view.client || ''],
+                ['Budget', view.budget || ''],
+                ['Priority', view.priority || ''],
+              ]
+            },
+            layout: 'lightHorizontalLines' // Optional: to have horizontal lines
+          }
+        ],
+        styles: {
+          header: {
+            fontSize: 18,
+            bold: true,
+            padding: 20
+          },
+          tableHeader: {
+            bold: true,
+            fontSize: 13,
+            color: 'black'
+          }
+        }
+      };
+    
+      pdfMake.createPdf(docDefinition).download('report.pdf');
+    };
+    
     return (
         <div className='home'>
-            <div className='d-flex justify-content-between align-items-center w-100 pt-4 pb-4 position-sticky top-0 bg-white'>
-                <h4>Project Management Tool</h4>
-                <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Project</button>
+            <div className='d-flex justify-content-between align-items-center w-100 pt-4 pb-4 bg-white'>
+
             </div>
-            <div className='d-flex justify-content-end align-items-center gap-3 flex-row w-100 bg-white pt-2 pb-3'>
-                <h4 className='m-0'>Filter</h4>
+            <div className='d-flex justify-content-between align-items-center gap-3 flex-row w-100 bg-white pt-2 pb-3'>
                 <div>
-                    <input
-                        type="text"
-                        placeholder="search ..."
-                        className="form-control w-100 m-0"
-                        value={filterQuery}
-                        onChange={handleFilterChange}
-                    />
+                    <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Project</button>
+                </div>
+                <div className='d-flex align-items-center gap-3 bg-white'>
+                    <h4 className='m-0'>Filter</h4>
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="search ..."
+                            className="form-control w-100 m-0"
+                            value={filterQuery}
+                            onChange={handleFilterChange}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -131,15 +181,15 @@ const Home = () => {
             >
                 <Modal.Header closeButton>
                     <Modal.Title>User Detail</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Table striped> 
-                        {[view]?.map((item,idx) => { 
+                </Modal.Header>  
+                <Modal.Body className="modal-body">
+                    <Table striped>
+                        {[view]?.map((item, idx) => {
                             return (
                                 <>
                                     <thead>
                                         <tr>
-                                            <td>Project Name</td>   
+                                            <td>Project Name</td>
                                             <td>{item.projectname}</td>
                                         </tr>
                                     </thead>
@@ -162,8 +212,8 @@ const Home = () => {
                                         </tr>
                                         <tr>
                                             <td>Status</td>
-                                            <td>{item.status}</td>  
-                                        </tr>   
+                                            <td>{item.status}</td>
+                                        </tr>
                                         <tr>
                                             <td>Client</td>
                                             <td>{item.client}</td>
@@ -174,19 +224,20 @@ const Home = () => {
                                         </tr>
                                         <tr>
                                             <td>Priority</td>
-                                            <td>{item.priority}</td>    
-                                        </tr>   
-                                    </tbody>    
-                                </>     
-                            )   
-                        })}     
-
+                                            <td>{item.priority}</td>
+                                        </tr>
+                                    </tbody>
+                                </>
+                            );
+                        })}
                     </Table>
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant="primary" onClick={handleDownloadReport}>Download Report</Button> 
                     <Button variant="secondary" onClick={handleClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
+
 
             <div className='table-container'>
                 <table className='table table-bordered'>
