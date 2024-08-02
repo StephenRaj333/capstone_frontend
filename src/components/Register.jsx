@@ -20,14 +20,14 @@ function Signup() {
 
     const handleSubmit = (e) => {    
         e.preventDefault(); 
-        Axios.post("https://capstone-backend-psi-seven.vercel.app/signup",signup).then((res) => {  
+        Axios.post("https://capstone-backend-xi.vercel.app/signup",signup).then((res) => {  
             if(res.status === 201) {
                 Navigate("/login");
             }
         }).catch((err) => {
             setErrorText(err.response.data);
         });  
-    }   
+    }       
   return (      
     <div className="login-container">           
                 <ToastContainer />  

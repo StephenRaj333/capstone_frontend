@@ -28,7 +28,7 @@ const Home = () => {
     const handleClose = () => setShow(false);
 
     useEffect(() => {
-        Axios.get("http://localhost:3000/get")
+        Axios.get("https://capstone-backend-xi.vercel.app/get")
             .then((res) => {
                 setTableData(res.data);
             })
@@ -46,7 +46,7 @@ const Home = () => {
     };
 
     const handleSave = () => {
-        Axios.put(`https://capstone-backend-psi-seven.vercel.app/update/${editedRow.id}`, editedRow)
+        Axios.put(`https://capstone-backend-xi.vercel.app/update/${editedRow.id}`, editedRow)
             .then((res) => {
                 console.log(res.data);
                 let updatedData = [...tableData];
@@ -58,7 +58,7 @@ const Home = () => {
     };
 
     const handleDelete = (id) => {
-        Axios.delete(`https://capstone-backend-psi-seven.vercel.app/delete/${id}`)
+        Axios.delete(`https://capstone-backend-xi.vercel.app/delete/${id}`)
             .then((res) => {
                 console.log(res.data);
                 setTableData(tableData.filter(item => item.id !== id));
@@ -72,7 +72,7 @@ const Home = () => {
     };
 
     const handleAddProject = () => {
-        Axios.post("https://capstone-backend-psi-seven.vercel.app/add", newProject)
+        Axios.post("https://capstone-backend-xi.vercel.app/add", newProject)
             .then((res) => {
                 console.log(res.data);
                 setTableData([...tableData, newProject]);

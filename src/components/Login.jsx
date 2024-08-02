@@ -20,11 +20,11 @@ function Login() {
     }
 
     const handleSubmit = () => {
-        Axios.post("https://capstone-backend-psi-seven.vercel.app/login", formData).then((res) => {
+        Axios.post("https://capstone-backend-xi.vercel.app/login", formData).then((res) => {
             if (res.data.token) {
                 sessionStorage.setItem("token", res.data.token);
                 setHelperText("Login Successfull");
-                navigate("/dashboard");
+                navigate("/dashboard/home");
             }
         }).catch((err) => {
             console.log("Error", err);  
