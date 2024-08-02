@@ -19,6 +19,7 @@ aside {
   padding: 16px;
   text-align: center;
   max-width: 244px;
+  border :1px solid #c4c4c4;
 }
 
 .sidebar {

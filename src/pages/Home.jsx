@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Table from 'react-bootstrap/Table';
+import Modal from 'react-bootstrap/Modal';
 import Axios from 'axios';
 
 const Home = () => {
     const [tableData, setTableData] = useState([]);
     const [editIdx, setEditIdx] = useState(-1);
     const [editedRow, setEditedRow] = useState({});
-    const [newProject, setNewProject] = useState({  
+    const [newProject, setNewProject] = useState({
         projectname: '',
         description: '',
         technologies: '',
@@ -16,14 +19,18 @@ const Home = () => {
         budget: '',
         priority: ''
     });
+    const [filterQuery, setFilterQuery] = useState(''); // New state for filter input
+    const [show, setShow] = useState(false);
+    const [view, setView] = useState([]);
+    const handleClose = () => setShow(false);
 
-    useEffect(() => {       
-        Axios.get("https://capstone-backend-psi-seven.vercel.app/get")      
+    useEffect(() => {
+        Axios.get("http://localhost:3000/get")      
             .then((res) => {    
-                setTableData(res.data);
+                setTableData(res.data);  
             })
             .catch((err) => console.log("Error", err));
-    }, [tableData]);  
+    }, []);
 
     const handleEdit = (idx) => {
         setEditIdx(idx);
@@ -44,11 +51,11 @@ const Home = () => {
                 setTableData(updatedData);
                 setEditIdx(-1);
             })
-            .catch((err) => console.log("Error", err)); 
+            .catch((err) => console.log("Error", err));
     };
 
     const handleDelete = (id) => {
-        Axios.delete(`https://capstone-backend-psi-seven.vercel.app/delete/${id}`)  
+        Axios.delete(`https://capstone-backend-psi-seven.vercel.app/delete/${id}`)      
             .then((res) => {
                 console.log(res.data);
                 setTableData(tableData.filter(item => item.id !== id));
@@ -62,7 +69,7 @@ const Home = () => {
     };
 
     const handleAddProject = () => {
-        Axios.post("https://capstone-backend-psi-seven.vercel.app/add", newProject)     
+        Axios.post("https://capstone-backend-psi-seven.vercel.app/add", newProject)
             .then((res) => {
                 console.log(res.data);
                 setTableData([...tableData, newProject]);
@@ -78,8 +85,24 @@ const Home = () => {
                     priority: ''
                 });
             })
-            .catch((err) => console.log("Error", err));         
-    };  
+            .catch((err) => console.log("Error", err));
+    };
+
+    const handleFilterChange = (e) => {
+        setFilterQuery(e.target.value);
+    };
+
+    const filteredData = tableData.filter(item =>
+        Object.values(item).some(value =>
+            value.toString().toLowerCase().includes(filterQuery.toLowerCase())
+        )
+    );
+
+    const handleShow = (idx) => {
+        setShow(true); 
+        setView(idx); 
+        console.log(idx);
+    }
 
     return (
         <div className='home'>
@@ -87,26 +110,105 @@ const Home = () => {
                 <h4>Project Management Tool</h4>
                 <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Project</button>
             </div>
+            <div className='d-flex justify-content-end align-items-center gap-3 flex-row w-100 bg-white pt-2 pb-3'>
+                <h4 className='m-0'>Filter</h4>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="search ..."
+                        className="form-control w-100 m-0"
+                        value={filterQuery}
+                        onChange={handleFilterChange}
+                    />
+                </div>
+            </div>
+
+            <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>User Detail</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Table striped> 
+                        {[view]?.map((item,idx) => { 
+                            return (
+                                <>
+                                    <thead>
+                                        <tr>
+                                            <td>Project Name</td>   
+                                            <td>{item.projectname}</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Description</td>
+                                            <td>{item.description}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Technologies</td>
+                                            <td>{item.technologies}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Deadlines</td>
+                                            <td>{item.deadlines}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Project Members</td>
+                                            <td>{item.projectMembers}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Status</td>
+                                            <td>{item.status}</td>  
+                                        </tr>   
+                                        <tr>
+                                            <td>Client</td>
+                                            <td>{item.client}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Budget</td>
+                                            <td>{item.budget}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Priority</td>
+                                            <td>{item.priority}</td>    
+                                        </tr>   
+                                    </tbody>    
+                                </>     
+                            )   
+                        })}     
+
+                    </Table>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
             <div className='table-container'>
                 <table className='table table-bordered'>
-                    <thead> 
+                    <thead>
                         <tr>
                             <td>S.no</td>
-                            <td>projectname:</td>
-                            <td>description:</td>
-                            <td>technologies:</td>
-                            <td>deadlines:</td>
-                            <td>projectMembers:</td>
-                            <td>status:</td>
-                            <td>client:</td>
-                            <td>budget:</td>
-                            <td>priority:</td>
+                            <td>Project Name</td>
+                            <td>Description</td>
+                            <td>Technologies</td>
+                            <td>Deadlines</td>
+                            <td>Project Members</td>
+                            <td>Status</td>
+                            <td>Client</td>
+                            <td>Budget</td>
+                            <td>Priority</td>
                             <td>Edit</td>
                             <td>Delete</td>
+                            <td>View</td>
                         </tr>
                     </thead>
                     <tbody>
-                        {tableData.map((item, idx) => {
+                        {filteredData.map((item, idx) => {
                             return (
                                 <tr key={idx}>
                                     {editIdx === idx ? (
@@ -138,6 +240,7 @@ const Home = () => {
                                             <td>{item.priority}</td>
                                             <td><button className='btn btn-primary' onClick={() => handleEdit(idx)}>Edit</button></td>
                                             <td><button className='btn btn-danger' onClick={() => handleDelete(item.id)}>Delete</button></td>
+                                            <td><button className='btn btn-info' onClick={() => handleShow(item)}>View</button></td>
                                         </>
                                     )}
                                 </tr>
@@ -213,7 +316,7 @@ const Home = () => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={handleAddProject}>Save changes</button>      
+                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={handleAddProject}>Save changes</button>
                         </div>
                     </div>
                 </div>
