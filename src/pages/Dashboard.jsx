@@ -20,8 +20,8 @@ const Home = () => {
                         <h4> Dashboard </h4>
                     </div>
                     <Link className={location.pathname === "/dashboard/home" ? "active" : ""} to="home">Project Details</Link>
-                    <Link className={location.pathname === "/dashboard/about" ? "active" : ""} to="about">About</Link>
-                    <Link className={location.pathname === "/dashboard/contact" ? "active" : ""} to="contact">Contact</Link>
+                    {/* <Link className={location.pathname === "/dashboard/about" ? "active" : ""} to="about">About</Link>
+                    <Link className={location.pathname === "/dashboard/contact" ? "active" : ""} to="contact">Contact</Link> */}
                     <div className="footer">  
                         <a>Footer</a> 
                     </div> 
