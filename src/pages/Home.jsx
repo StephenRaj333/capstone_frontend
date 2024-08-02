@@ -31,6 +31,7 @@ const Home = () => {
         Axios.get("https://capstone-backend-xi.vercel.app/get")
             .then((res) => {
                 setTableData(res.data);
+                console.log(res.data)
             })
             .catch((err) => console.log("Error", err));
     }, [tableData]);

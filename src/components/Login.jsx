@@ -24,7 +24,7 @@ function Login() {
             if (res.data.token) {
                 sessionStorage.setItem("token", res.data.token);
                 setHelperText("Login Successfull");
-                navigate("/dashboard/home");
+                navigate("/dashboard");
             }
         }).catch((err) => {
             console.log("Error", err);  
