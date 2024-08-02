@@ -66,21 +66,21 @@ const Home = () => {
                     <Outlet />
                 ) : (
                     <>
-                                        <div>
-                        <Dropdown onSelect={handleSelect}>
-                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                {selectedProject ? selectedProject.projectname : 'Select a Project'}
-                            </Dropdown.Toggle>
+                        <div>
+                            <Dropdown onSelect={handleSelect}>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    {selectedProject ? selectedProject.projectname : 'Select a Project'}
+                                </Dropdown.Toggle>
 
-                            <Dropdown.Menu>
-                                {projects.map(project => (
-                                    <Dropdown.Item key={project._id} eventKey={project._id}>
-                                        {project.projectname}
-                                    </Dropdown.Item>
-                                ))}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
+                                <Dropdown.Menu>
+                                    {projects.map(project => (
+                                        <Dropdown.Item key={project._id} eventKey={project._id}>
+                                            {project.projectname}
+                                        </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
                         {selectedProject && (
                             <div>
                                 <h5>Project Details</h5>
@@ -103,7 +103,7 @@ const Home = () => {
                                             ],
                                         }}
                                         options={{
-                                            responsive: true,   
+                                            responsive: true,
                                             maintainAspectRatio: false,
                                             plugins: {
                                                 legend: {
