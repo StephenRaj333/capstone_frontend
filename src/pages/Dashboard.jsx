@@ -1,45 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import ProjectDropdown from '../components/DropdownComponent';
-import ProjectChart from '../components/ChartComponent';
+import Axios from 'axios';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-const projects = [
-    {
-      _id: '66a5e88064b10f03a1e44a74',
-      projectname: 'Gild ProjectS',
-      budget: '50000',
-      client: 'Gild Financials',
-      deadlines: '02/08/2024',
-      description: 'Credit Card Management',
-      priority: 'High',
-      projectMembers: '23',
-      status: 'completed',
-      technologies: 'HTML, CSS, JavaScript',
-      chartData: {
-        labels: ['Metric 1', 'Metric 2', 'Metric 3'],
-        values: [10, 20, 30],
-      },
-    },
-  ];
-  
+// Register the required components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Home = () => {
     const location = useLocation();
     const navigate = useNavigate();
-  // Initialize state with the first project's chartData
-  const [selectedProject, setSelectedProject] = useState(projects[0].chartData);
-  const [selectedProjectId, setSelectedProjectId] = useState(projects[0]._id);
+    const [projects, setProjects] = useState([]);
+    const [selectedProject, setSelectedProject] = useState(null);
 
-  const handleProjectSelect = (projectId) => {
-    const project = projects.find((p) => p._id === projectId);
-    setSelectedProject(project ? project.chartData : null);
-    setSelectedProjectId(projectId);
-  };
+    useEffect(() => {
+        Axios.get("https://capstone-backend-xi.vercel.app/get")
+            .then((res) => {
+                setProjects(res.data);
+            })
+            .catch((err) => console.log("Error", err));
+    }, []);
 
     const handleLogout = () => {
         sessionStorage.removeItem('token');
         navigate('/login');
+    };
+
+    const handleSelect = (projectId) => {
+        const project = projects.find(p => p._id === projectId);
+        setSelectedProject(project);
     };
 
     return (
@@ -56,7 +46,7 @@ const Home = () => {
                 </div>
             </aside>
             <div className='outlet'>
-                <div className='bg-dark d-flex justify-content-between pt-3 pb-2 position-sticky top-0 p-4 text-white '>
+                <div className='bg-dark d-flex justify-content-between pt-3 pb-2 position-sticky top-0 p-4 text-white'>
                     <div>
                         <h4>Project Management Tool</h4>
                     </div>
@@ -72,19 +62,65 @@ const Home = () => {
                         </Dropdown>
                     </div>
                 </div>
-                {location.pathname === "/dashboard/home" ? <Outlet /> :
+                {location.pathname === "/dashboard/home" ? (
+                    <Outlet />
+                ) : (
                     <>
-                        <div>
-                            <ProjectDropdown
-                                projects={projects}
-                                selectedProjectId={selectedProjectId} // Pass the default selected ID
-                                onProjectSelect={handleProjectSelect}
-                            />
-                            <ProjectChart data={selectedProject} />
-                        </div>
-                    </>
-                }
+                                        <div>
+                        <Dropdown onSelect={handleSelect}>
+                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                {selectedProject ? selectedProject.projectname : 'Select a Project'}
+                            </Dropdown.Toggle>
 
+                            <Dropdown.Menu>
+                                {projects.map(project => (
+                                    <Dropdown.Item key={project._id} eventKey={project._id}>
+                                        {project.projectname}
+                                    </Dropdown.Item>
+                                ))}
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                        {selectedProject && (
+                            <div>
+                                <h5>Project Details</h5>
+                                <p>Project Members: {selectedProject.projectMembers}</p>
+                                <p>Status: {selectedProject.status}</p>
+                                <p>Budget: ${selectedProject.budget}</p>
+                                <div style={{ width: '100%', height: '400px' }}>
+                                    <Bar
+                                        data={{
+                                            labels: ['Project Members', 'Budget'],
+                                            datasets: [
+                                                {
+                                                    label: selectedProject.projectname,
+                                                    data: [
+                                                        selectedProject.projectMembers,
+                                                        selectedProject.budget,
+                                                    ],
+                                                    backgroundColor: ['#36A2EB', '#FF6384'],
+                                                },
+                                            ],
+                                        }}
+                                        options={{
+                                            responsive: true,   
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'top',
+                                                },
+                                                title: {
+                                                    display: true,
+                                                    text: 'Project Overview',
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );
