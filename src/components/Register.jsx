@@ -41,7 +41,7 @@ function Signup() {
                 <div className="input_box"> 
                     <input type="password" name="pwd" value={signup.pwd} onChange={handleChange} placeholder="Password" />
                 </div>
-                <button className="submit_btn">Submit</button>          
+                <button className="submit_btn">Sign Up</button>          
                 <br />
                 <p className="for_pass">Already a user ? Login <Link to="/login">here</Link></p>   
                 <p style={{color: "RED"}}>{errorText}</p>

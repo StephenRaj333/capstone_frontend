@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import {Link} from 'react-router-dom'
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
@@ -109,52 +110,57 @@ const Home = () => {
     }
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-    
+
     const handleDownloadReport = () => {
-      const docDefinition = {
-        content: [
-          { text: 'User Detail', style: 'header', margin: [0, 0, 0, 10] },
-          {
-            table: {
-              headerRows: 1,
-              widths: ['*', '*'],
-              body: [
-                [{ text: 'Field', style: 'tableHeader' }, { text: 'Value', style: 'tableHeader' }],
-                ['Project Name', view.projectname || ''],
-                ['Description', view.description || ''],
-                ['Technologies', view.technologies || ''],
-                ['Deadlines', view.deadlines || ''],
-                ['Project Members', view.projectMembers || ''],
-                ['Status', view.status || ''],
-                ['Client', view.client || ''],
-                ['Budget', view.budget || ''],
-                ['Priority', view.priority || ''],
-              ]
-            },
-            layout: 'lightHorizontalLines' // Optional: to have horizontal lines
-          }
-        ],
-        styles: {
-          header: {
-            fontSize: 18,
-            bold: true,
-            padding: 20
-          },
-          tableHeader: {
-            bold: true,
-            fontSize: 13,
-            color: 'black'
-          }
-        }
-      };
-    
-      pdfMake.createPdf(docDefinition).download('report.pdf');
+        const docDefinition = {
+            content: [
+                { text: 'User Detail', style: 'header', margin: [0, 0, 0, 10] },
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: ['*', '*'],
+                        body: [
+                            [{ text: 'Field', style: 'tableHeader' }, { text: 'Value', style: 'tableHeader' }],
+                            ['Project Name', view.projectname || ''],
+                            ['Description', view.description || ''],
+                            ['Technologies', view.technologies || ''],
+                            ['Deadlines', view.deadlines || ''],
+                            ['Project Members', view.projectMembers || ''],
+                            ['Status', view.status || ''],
+                            ['Client', view.client || ''],
+                            ['Budget', view.budget || ''],
+                            ['Priority', view.priority || ''],
+                        ]
+                    },
+                    layout: 'lightHorizontalLines' // Optional: to have horizontal lines
+                }
+            ],
+            styles: {
+                header: {
+                    fontSize: 18,
+                    bold: true,
+                    padding: 20
+                },
+                tableHeader: {
+                    bold: true,
+                    fontSize: 13,
+                    color: 'black'
+                }
+            }
+        };
+
+        pdfMake.createPdf(docDefinition).download('report.pdf');
     };
-    
+
     return (
         <div className='home'>
-            <div className='d-flex justify-content-between align-items-center w-100 pt-4 pb-4 bg-white'>
-
+            <div className='d-flex justify-content-between align-items-center w-100 pt-4 pb-4 bg-white'>    
+                <nav aria-label="breadcrumb">   
+                    <ol class="breadcrumb"> 
+                        <li class="breadcrumb-item text-underline"><a href="#"> <Link to="/dashboard">Dashboard</Link> </a></li>   
+                        <li class="breadcrumb-item active" aria-current="page">Project Details</li>  
+                    </ol>   
+                </nav>
             </div>
             <div className='d-flex justify-content-between align-items-center gap-3 flex-row w-100 bg-white pt-2 pb-3'>
                 <div>
@@ -182,7 +188,7 @@ const Home = () => {
             >
                 <Modal.Header closeButton>
                     <Modal.Title>User Detail</Modal.Title>
-                </Modal.Header>  
+                </Modal.Header>
                 <Modal.Body className="modal-body">
                     <Table striped>
                         {[view]?.map((item, idx) => {
@@ -234,7 +240,7 @@ const Home = () => {
                     </Table>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={handleDownloadReport}>Download Report</Button> 
+                    <Button variant="primary" onClick={handleDownloadReport}>Download Report</Button>
                     <Button variant="secondary" onClick={handleClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
@@ -286,7 +292,7 @@ const Home = () => {
                                             <td>{item.technologies}</td>
                                             <td>{item.deadlines}</td>
                                             <td>{item.projectMembers}</td>
-                                            <td>{item.status}</td>
+                                            <td>{item.status + "%"}</td>
                                             <td>{item.client}</td>
                                             <td>{item.budget}</td>
                                             <td>{item.priority}</td>

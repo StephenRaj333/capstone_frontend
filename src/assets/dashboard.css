@@ -25,7 +25,7 @@ aside {
 .sidebar {
     margin: 0;
     padding: 0;
-    background-color: #f1f1f1;
+    background: #E6EDFA;
     width: 100%;
     height: 100vh;  
     overflow: auto;
@@ -33,30 +33,41 @@ aside {
     position: sticky;
     top: 0;
   }
-  
+  .sidebar .dashboard-heading a:hover {
+    background: transparent !important;
+    color: #000 !important;
+  }
   .sidebar a {
     display: block;
     color: black;
-    padding: 16px;
+    padding: 16px; 
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 20px;
   } 
 
-  .active {     
-    background-color: #04AA6D;  
+  .sidebar a img {
+    width: 20px;
+  }
+
+  .sidebar .active {     
+    background-color: #233253;  
     color: white !important;   
   }
 
   .sidebar .footer {
     position: absolute;
     bottom: 0;
-    background: #c1c1c1;
+    background: #161B22;
+    color: #FFF;
     width: 100%;  
   }
   
-  .sidebar a:hover:not(.active) { 
-    background-color: #c1c1c1;  
-    color: white;
-  }
+  /* .sidebar a:hover:not(.active) { 
+    background-color: #E6EDFA;    
+    color: #000;
+  } */
   
   div.content {
     padding: 1px 16px;
@@ -113,3 +124,23 @@ aside {
     max-width: 244px !important;  
     padding: 8px 12px !important;
   }   
+
+  .select-container{
+    max-width: 300px;
+  }   
+
+  .chart-container {  
+    position: relative;  
+    width: 100%;  
+    height: 27.77777777777778vw;  
+  }     
+
+  .chart-center-text{
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-55%, -50%);   
+    text-align: center;
+  } 
+
+  

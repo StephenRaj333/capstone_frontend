@@ -28,16 +28,7 @@ function Login() {
             }
         }).catch((err) => {
             console.log("Error", err);  
-            toast.error(err, {  
-                position: "top-center", 
-                autoClose: 5000,    
-                hideProgressBar: true,  
-                closeOnClick: true, 
-                pauseOnHover: true, 
-                draggable: true,    
-                progress: undefined,    
-                theme: "light",     
-            });
+            setHelperText(err.response.data);
         });
     }
 
@@ -53,8 +44,8 @@ function Login() {
                 <div className="input_box">
                     <input type="password" name="pwd" placeholder="Password" value={formData.pwd} onChange={handleChange} />
                 </div>
-                <button onClick={handleSubmit} className="submit_btn">Submit</button>
-                {helperText ? <h5>{helperText}</h5> : ""}
+                <button onClick={handleSubmit} className="submit_btn">Login</button>
+                {helperText ? <h5 className='text-danger'>{helperText}</h5> : ""}
                 <p className='for_pass'>Dont Have an Account ? Sign up <Link to="/signup">Here</Link> </p>
             </div>
         </div>

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import Dropdown from 'react-bootstrap/Dropdown';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Dropdown } from 'react-bootstrap';
 import Axios from 'axios';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
+import Select from 'react-select';
 
 // Register the required components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, DoughnutController, ArcElement, Tooltip, Legend);
 
-const Home = () => {
+const Dashboard = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [projects, setProjects] = useState([]);
@@ -17,7 +18,11 @@ const Home = () => {
     useEffect(() => {
         Axios.get("https://capstone-backend-xi.vercel.app/get")
             .then((res) => {
-                setProjects(res.data);
+                const projectsData = res.data;
+                setProjects(projectsData);
+                if (projectsData.length > 0) {
+                    setSelectedProject(projectsData[0]);
+                }
             })
             .catch((err) => console.log("Error", err));
     }, []);
@@ -27,8 +32,8 @@ const Home = () => {
         navigate('/login');
     };
 
-    const handleSelect = (projectId) => {
-        const project = projects.find(p => p._id === projectId);
+    const handleSelect = (selectedOption) => {
+        const project = projects.find(p => p._id === selectedOption.value);
         setSelectedProject(project);
     };
 
@@ -37,16 +42,18 @@ const Home = () => {
             <aside>
                 <div className="sidebar">
                     <div className="dashboard-heading">
-                        <h4> Dashboard </h4>
+                        <Link className='m-0 p-0' to="/dashboard">  <h4 className='m-0 p-0'> Dashboard </h4></Link>
                     </div>
-                    <Link className={location.pathname === "/dashboard/home" ? "active" : ""} to="home">Project Details</Link>
+                    <Link className={location.pathname === "/dashboard/home" ? "active" : ""} to="home">
+                        <img src="https://img.icons8.com/?size=100&id=99982&format=png&color=000000" alt="" />
+                        Project Details</Link>
                     <div className="footer">
                         <a>Footer</a>
                     </div>
                 </div>
             </aside>
             <div className='outlet'>
-                <div className='bg-dark d-flex justify-content-between pt-3 pb-2 position-sticky top-0 p-4 text-white'>
+                <div className='bg-dark d-flex justify-content-between pt-4 pb-2 position-sticky top-0 p-4 text-white'>
                     <div>
                         <h4>Project Management Tool</h4>
                     </div>
@@ -61,61 +68,60 @@ const Home = () => {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
-                </div>
+                </div>  
                 {location.pathname === "/dashboard/home" ? (
                     <Outlet />
                 ) : (
                     <>
-                        <div>
-                            <Dropdown onSelect={handleSelect}>
-                                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                    {selectedProject ? selectedProject.projectname : 'Select a Project'}
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu>
-                                    {projects.map(project => (
-                                        <Dropdown.Item key={project._id} eventKey={project._id}>
-                                            {project.projectname}
-                                        </Dropdown.Item>
-                                    ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
+                        <div className='p-5'>
+                            <h3 className='text-primary'>Project Task Completion</h3>
+                            <p className='text-success m-0'>Select Project</p>
+                            <Select
+                                className='select-container'
+                                value={selectedProject ? { value: selectedProject._id, label: selectedProject.projectname } : null}
+                                onChange={handleSelect}
+                                options={projects.map(project => ({
+                                    value: project._id,
+                                    label: project.projectname
+                                }))}
+                                placeholder="Select a Project"
+                            />
                         </div>
                         {selectedProject && (
                             <div>
-                                <h5>Project Details</h5>
-                                <p>Project Members: {selectedProject.projectMembers}</p>
-                                <p>Status: {selectedProject.status}</p>
-                                <p>Budget: ${selectedProject.budget}</p>
-                                <div style={{ width: '100%', height: '400px' }}>
-                                    <Bar
+                                <div className='chart-container'>
+                                    <Doughnut
                                         data={{
-                                            labels: ['Project Members', 'Budget'],
+                                            labels: ["Completed", 'Pending'],
                                             datasets: [
                                                 {
-                                                    label: selectedProject.projectname,
-                                                    data: [
-                                                        selectedProject.projectMembers,
-                                                        selectedProject.budget,
-                                                    ],
-                                                    backgroundColor: ['#36A2EB', '#FF6384'],
+                                                    label: 'Project Status',
+                                                    data: [selectedProject.status, 100 - selectedProject.status],
+                                                    backgroundColor: ['#37a2eb', '#ff6384'],
                                                 },
                                             ],
                                         }}
                                         options={{
                                             responsive: true,
                                             maintainAspectRatio: false,
+                                            cutout: '50%',
                                             plugins: {
                                                 legend: {
-                                                    position: 'top',
-                                                },
-                                                title: {
                                                     display: true,
-                                                    text: 'Project Overview',
                                                 },
-                                            },
+                                                tooltip: {
+                                                    callbacks: {
+                                                        label: function (context) {
+                                                            return `Status: ${context.raw}%`;
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }}
                                     />
+                                    <div className="chart-center-text">
+                                        <h4 className='text-success'>{selectedProject.status}%<br />Completed</h4>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -126,4 +132,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default Dashboard;
