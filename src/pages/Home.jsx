@@ -5,7 +5,7 @@ import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Axios from 'axios';
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';    
 
 
 const Home = () => {
@@ -156,9 +156,9 @@ const Home = () => {
         <div className='home'>
             <div className='d-flex justify-content-between align-items-center w-100 pt-4 pb-4 bg-white'>    
                 <nav aria-label="breadcrumb">   
-                    <ol class="breadcrumb"> 
-                        <li class="breadcrumb-item text-underline"><a href="#"> <Link to="/dashboard">Dashboard</Link> </a></li>   
-                        <li class="breadcrumb-item active" aria-current="page">Project Details</li>  
+                    <ol className="breadcrumb"> 
+                        <li className="breadcrumb-item text-underline"><a href="#"> <Link to="/dashboard">Dashboard</Link> </a></li>   
+                        <li className="breadcrumb-item active" aria-current="page">Project Details</li>  
                     </ol>   
                 </nav>
             </div>
