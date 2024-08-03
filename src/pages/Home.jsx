@@ -4,8 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Axios from 'axios';
-import pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';    
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 
 const Home = () => {
@@ -109,48 +109,49 @@ const Home = () => {
         console.log(idx);
     }
 
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
     const handleDownloadReport = () => {
-        const docDefinition = {
-            content: [
-                { text: 'User Detail', style: 'header', margin: [0, 0, 0, 10] },
-                {
-                    table: {
-                        headerRows: 1,
-                        widths: ['*', '*'],
-                        body: [
-                            [{ text: 'Field', style: 'tableHeader' }, { text: 'Value', style: 'tableHeader' }],
-                            ['Project Name', view.projectname || ''],
-                            ['Description', view.description || ''],
-                            ['Technologies', view.technologies || ''],
-                            ['Deadlines', view.deadlines || ''],
-                            ['Project Members', view.projectMembers || ''],
-                            ['Status', view.status || ''],
-                            ['Client', view.client || ''],
-                            ['Budget', view.budget || ''],
-                            ['Priority', view.priority || ''],
-                        ]
-                    },
-                    layout: 'lightHorizontalLines' // Optional: to have horizontal lines
-                }
-            ],
-            styles: {
-                header: {
-                    fontSize: 18,
-                    bold: true,
-                    padding: 20
-                },
-                tableHeader: {
-                    bold: true,
-                    fontSize: 13,
-                    color: 'black'
-                }
-            }
-        };
-
-        pdfMake.createPdf(docDefinition).download('report.pdf');
-    };
+      const doc = new jsPDF();
+    
+      // Adding a title
+      doc.setFontSize(18);
+      doc.text('User Detail', 20, 10);
+    
+      // Adding a table
+      const tableColumn = ['Field', 'Value'];
+      const tableRows = [
+        ['Project Name', view.projectname || ''],
+        ['Description', view.description || ''],
+        ['Technologies', view.technologies || ''],
+        ['Deadlines', view.deadlines || ''],
+        ['Project Members', view.projectMembers || ''],
+        ['Status', view.status || ''],
+        ['Client', view.client || ''],
+        ['Budget', view.budget || ''],
+        ['Priority', view.priority || ''],
+      ];
+    
+      // Auto-table plugin
+      doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 20,
+        styles: {
+          cellPadding: 3,
+          fontSize: 12,
+          lineColor: [44, 62, 80],
+          lineWidth: 0.5,
+        },
+        headStyles: {
+          fillColor: [44, 62, 80],
+          textColor: 255,
+          fontStyle: 'bold',
+        },
+      });
+    
+      // Save the PDF
+      doc.save('report.pdf');
+    };  
+    
 
     return (
         <div className='home'>
